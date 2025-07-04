@@ -80,19 +80,23 @@ DELETE FROM Dependent
 WHERE ESSN = '222334444' AND Dependent_Name = 'Mona';
 
 
-SELECT E.SSN, E.FName, E.LName, D.DName
-FROM Employee E
-JOIN Department D ON E.DNO = D.DNUM
-WHERE D.DName = 'IT';
+SELECT SSN, FName, LName, DNO
+FROM Employee
+WHERE DNO = (
+    SELECT DNUM
+    FROM Department
+    WHERE DName = 'IT'
+);
+
 
 
 SELECT 
-    E.FName, 
-    E.LName, 
-    P.PName AS ProjectName, 
-    W.Hours
-FROM Works_On W
-JOIN Employee E ON E.SSN = W.ESSN
-JOIN Project P ON P.PNumber = W.PNumber;
+    ESSN,
+    (SELECT FName FROM Employee WHERE SSN = W.ESSN) AS FName,
+    (SELECT LName FROM Employee WHERE SSN = W.ESSN) AS LName,
+    (SELECT PName FROM Project WHERE PNumber = W.PNumber) AS ProjectName,
+    Hours
+FROM Works_On W;
+
 
 
